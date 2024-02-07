@@ -42,38 +42,4 @@ export class Planet {
         return `x: ${Math.round(this.velocity.x)}, y: ${Math.round(this.velocity.y)}, z: ${Math.round(this.velocity.z)}`;
         return `x: ${this.velocity.x}, y: ${this.velocity.y}, z: ${this.velocity.z}`;
     }
-
-    initVelocityArrow() {
-        const g = new THREE.ConeGeometry(10, 400)
-        const m = new THREE.MeshBasicMaterial({ color: 0xffffff })
-        this.velocityArrow = new THREE.Mesh(g, m)
-        this.scene.add(this.velocityArrow)
-        console.log(this.velocityArrow)
-    }
-
-    drawVelocityArrow() {
-        if (!this.velocityArrow) this.initVelocityArrow();
-
-        this.velocityArrow.position.set(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z)
-
-        this.velocityArrow.rotation.z = Math.PI * .5
-        const rotY = this.getRotationFromVelocity()
-        this.velocityArrow.rotation.y = rotY
-    }
-
-    getRotationFromVelocity() {
-        // console.log(thi÷s.velocity)
-        if (this.color == 0xff0000) return
-        const x = Math.abs(this.velocity.x)
-        const z = Math.abs(this.velocity.z)
-        const sum = x + z
-        const xF = x / sum
-        const zF = z / sum
-        console.log(xF)
-
-        return (Math.PI * sum) - Math.PI * 2
-
-
-        return 0
-    }
 }

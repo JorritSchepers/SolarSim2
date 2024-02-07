@@ -23,7 +23,6 @@ export class Universe {
 
         this.planets.forEach(planet => {
             planet.CalculateVelocity(this.planets)
-            planet.drawVelocityArrow()
         });
 
         this.planets.forEach(planet => {
