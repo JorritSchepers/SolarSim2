@@ -1,0 +1,8 @@
+<canvas id="bg"></canvas>
+<main>
+    <div style="font-size: 2em">
+        <p style="color: white"> Time: {{universe.getTime()}} (Timestep: {{universe.timeStep}})</p>
+        <p style="color: lime"> Green planet velocity: ({{universe.planets[0].velocityToString()}})</p>
+        <p style="color: rgb(255, 80, 80)"> Red planet velocity: ({{universe.planets[1].velocityToString()}})</p>
+    </div>
+</main>

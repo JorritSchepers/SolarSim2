@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { Universe } from './services/universe.service';
 
 const FOV = 40;
 
@@ -10,7 +12,7 @@ const FOV = 40;
 })
 export class AppComponent {
     // Start
-    cameraPos: number[] = [0, 0, 1000];
+    cameraPos: number[] = [0, 1000, 0];
 
     // Three 
     scene: any;
@@ -18,23 +20,44 @@ export class AppComponent {
     renderer: any;
     controls: any;
 
+    // Sim
+    universe: Universe;
+
     constructor() {
         this.setup()
+
+        this.universe = new Universe(this.scene)
     }
 
     private setup(): void {
         this.initThree()
-        this.initScene()
+    }
+
+    update() {
+        this.onWindowResize();
+        this.renderer.render(this.scene, this.camera);
     }
 
     initThree(): void {
         this.scene = new THREE.Scene();
+
+        // Camera
         this.camera = new THREE.PerspectiveCamera(FOV, window.innerWidth / window.innerHeight, 0.1, 500000000000000000);
         this.camera.position.set(this.cameraPos[0], this.cameraPos[1], this.cameraPos[2])
+        this.camera.lookAt(0, 0, 0)
+
         this.renderer = new THREE.WebGLRenderer({
             antialias: true,
             logarithmicDepthBuffer: true
         });
+
+        // Add grid
+        const gridSize = 100
+        const gridHelper = new THREE.GridHelper(gridSize * 20, 50);
+        this.scene.add(gridHelper);
+
+        // Controls
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -44,18 +67,12 @@ export class AppComponent {
         let app = this
         var animate = function () {
             requestAnimationFrame(animate);
-            app.onWindowResize();
-            app.renderer.render(app.scene, app.camera);
+            app.update();
+            app.controls.update();
+            if (app.universe) app.universe.update()
         };
 
         animate();
-    }
-
-    initScene(): void {
-        let geometry = new THREE.BoxGeometry(200, 200, 200);
-        let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-        let cube = new THREE.Mesh(geometry, material);
-        this.scene.add(cube);
     }
 
     onWindowResize(): void {
