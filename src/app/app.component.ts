@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Universe } from './services/universe.service';
@@ -34,8 +34,6 @@ export class AppComponent {
     }
 
     update() {
-        this.onWindowResize();
-        this.renderer.render(this.scene, this.camera);
     }
 
     initThree(): void {
@@ -67,7 +65,9 @@ export class AppComponent {
         let app = this
         var animate = function () {
             requestAnimationFrame(animate);
+            app.onWindowResize();
             app.update();
+            app.renderer.render(app.scene, app.camera);
             app.controls.update();
             if (app.universe) app.universe.update()
         };
@@ -79,5 +79,13 @@ export class AppComponent {
         this.camera.aspect = window.innerWidth / window.innerHeight
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(window.innerWidth, window.innerHeight)
+    }
+
+    @HostListener('document:keydown', ['$event'])
+    readKeyboardInput(event: KeyboardEvent) {
+        // TimeStep (-, +)
+        const stepSize = .5
+        if (event.key == "-") this.universe.timeStep -= stepSize
+        else if (event.key == "=") this.universe.timeStep += stepSize
     }
 }

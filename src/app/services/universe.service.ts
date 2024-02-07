@@ -5,7 +5,7 @@ export class Universe {
     planets: Planet[] = [];
 
     time = 0
-    timeStep = 0.1;
+    timeStep = .5;
 
     constructor(private scene: any) {
         this.initStartPlanets();
@@ -13,15 +13,17 @@ export class Universe {
 
     initStartPlanets() {
         const size = 50;
-        this.planets.push(new Planet(size, 0x00ff00, new THREE.Vector3(-300, 0, 0), 100, new THREE.Vector3(0, 0, -1), this.scene, this))
-        this.planets.push(new Planet(size, 0xff0000, new THREE.Vector3(300, 0, 0), 100, new THREE.Vector3(0, 0, 1), this.scene, this))
+        this.planets.push(new Planet(size, 0x00ff00, new THREE.Vector3(-300, 0, 0), 100, new THREE.Vector3(0, 0, -5), this.scene, this))
+        this.planets.push(new Planet(size, 0xff0000, new THREE.Vector3(300, 0, 0), 100, new THREE.Vector3(0, 0, 5), this.scene, this))
         // this.planets.push(new Planet(size, 0x0000ff, new THREE.Vector3(0, 0, -200), 100, new THREE.Vector3(0, 0, 0), this.scene))
     }
 
     update() {
         this.time += this.timeStep
+
         this.planets.forEach(planet => {
             planet.CalculateVelocity(this.planets)
+            planet.drawVelocityArrow()
         });
 
         this.planets.forEach(planet => {
