@@ -2,6 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Universe } from './services/universe.service';
+import { DragControls } from 'three/examples/jsm/controls/DragControls';
 
 const FOV = 40;
 
@@ -19,6 +20,8 @@ export class AppComponent {
     camera: any;
     renderer: any;
     controls: any;
+    dragControls: any;
+
 
     // Sim
     universe: Universe;
@@ -27,6 +30,8 @@ export class AppComponent {
         this.setup()
 
         this.universe = new Universe(this.scene)
+
+        this.initDragControls(this.universe.planets.map(x => x.mesh));
     }
 
     private setup(): void {
@@ -75,6 +80,17 @@ export class AppComponent {
         animate();
     }
 
+    initDragControls(objects: any[]) {
+        this.dragControls = new DragControls([...objects], this.camera, this.renderer.domElement);
+        this.dragControls.addEventListener('drag', () => {
+            this.universe.updateFakePlanets();
+        });
+
+        let app = this;
+        this.dragControls.addEventListener('dragstart', function () { app.controls.enabled = false; });
+        this.dragControls.addEventListener('dragend', function () { app.controls.enabled = true; });
+    }
+
     onWindowResize(): void {
         this.camera.aspect = window.innerWidth / window.innerHeight
         this.camera.updateProjectionMatrix();
@@ -87,5 +103,15 @@ export class AppComponent {
         const stepSize = .5
         if (event.key == "-") this.universe.timeStep -= stepSize
         else if (event.key == "=") this.universe.timeStep += stepSize
+    }
+
+    async simulate(n: number) {
+        for (let i = 0; i < n; i++) {
+            this.universe.doStep(this.universe.planets)
+        }
+    }
+
+    async sleep(n: number) {
+        return new Promise((x) => setTimeout(x, n))
     }
 }

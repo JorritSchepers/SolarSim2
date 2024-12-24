@@ -1,8 +1,20 @@
+<script type="importmap">
+    {
+        "imports": {
+            "three": "../build/three.module.js",
+            "three/addons/": "./jsm/"
+        }
+    }
+</script>
+
 <canvas id="bg"></canvas>
 <main>
-    <div style="font-size: 2em">
-        <p style="color: white"> Time: {{universe.getTime()}} (Timestep: {{universe.timeStep}})</p>
-        <p style="color: lime"> Green planet velocity: ({{universe.planets[0].velocityToString()}})</p>
-        <p style="color: rgb(255, 80, 80)"> Red planet velocity: ({{universe.planets[1].velocityToString()}})</p>
+    <div id="bottom-container">
+        <app-simulator style="opacity: 0;"></app-simulator>
+        <button id="start-button" (click)="universe.paused = !universe.paused">
+            <span *ngIf="universe.paused">Start</span>
+            <span *ngIf="!universe.paused">Pause</span>
+        </button>
+        <app-simulator></app-simulator>
     </div>
 </main>
