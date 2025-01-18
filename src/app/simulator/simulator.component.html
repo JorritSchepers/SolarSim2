@@ -8,14 +8,10 @@
     </div>
     <div>
         <span> preSimSteps</span>
+        <button (click)="updatePreSimSteps(-1000)">- 1000</button>
         <button (click)="updatePreSimSteps(-100)">- 100</button>
         <span> {{universe.preSimSteps}}</span>
         <button (click)="updatePreSimSteps(100)">+ 100</button>
-    </div>
-    <div>
-        <span> X</span>
-        <button (click)="updateXForFirstPlanet(-10)">- 10</button>
-        <span> {{universe.planets[0].pos.x}}</span>
-        <button (click)="updateXForFirstPlanet(10)">+ 10</button>
+        <button (click)="updatePreSimSteps(1000)">+ 1000</button>
     </div>
 </main>

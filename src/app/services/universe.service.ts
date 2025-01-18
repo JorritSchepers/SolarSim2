@@ -27,7 +27,6 @@ export class Universe {
         if (this.paused) return
 
         this.doStep(this.planets);
-        // this.doStep(this.fakePlanets);
 
     }
 
@@ -92,5 +91,18 @@ export class Universe {
                 }
             })
         })
+    }
+
+    colDetec() {
+        return this.fakePlanets.filter(x => x.exploded).length > 0;
+    }
+
+    checkForColInFuture() {
+        var stepsDone = 0;
+        while (!this.colDetec() && stepsDone < 10_000) {
+            this.preSimSteps++;
+            stepsDone++;
+            this.doStep(this.fakePlanets)
+        }
     }
 }

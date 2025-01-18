@@ -74,7 +74,9 @@ export class AppComponent {
             app.update();
             app.renderer.render(app.scene, app.camera);
             app.controls.update();
-            if (app.universe) app.universe.update()
+            if (app.universe) {
+                app.universe.update()
+            }
         };
 
         animate();
@@ -109,9 +111,5 @@ export class AppComponent {
         for (let i = 0; i < n; i++) {
             this.universe.doStep(this.universe.planets)
         }
-    }
-
-    async sleep(n: number) {
-        return new Promise((x) => setTimeout(x, n))
     }
 }
