@@ -1,0 +1,33 @@
+#top-bar
+    position: absolute
+    top: 0
+    left: 0
+    display: flex
+    align-items: center
+    justify-content: space-between
+    width: 100%
+    background: #262626
+    box-shadow: 0 0 10px 0 black
+    height: 50px
+
+    $br: 20px
+    border-bottom-left-radius: $br
+    border-bottom-right-radius: $br
+
+    div
+        width: 33%
+        display: flex
+        align-items: center
+        justify-content: center
+
+#start-button
+    height: 100%
+    width: 60px
+    background: none
+    border: none
+    color: snow
+    font-size: 40px
+
+    &:hover
+        cursor: pointer
+        background: #333

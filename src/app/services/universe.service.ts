@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Planet } from '../models/planet.model';
+import { Injectable } from '@angular/core';
 
 export class Universe {
     planets: Planet[] = [];
@@ -20,14 +21,31 @@ export class Universe {
         this.planets.push(new Planet(size, 0x00ff00, new THREE.Vector3(-300, 0, 100), 100, new THREE.Vector3(0, 0, -5), this.scene, this))
         this.planets.push(new Planet(size, 0xff0000, new THREE.Vector3(300, 0, 100), 100, new THREE.Vector3(-5, 0, 5), this.scene, this))
         this.planets.push(new Planet(size, 0x0000ff, new THREE.Vector3(0, 0, -300), 100, new THREE.Vector3(5, 0, 0), this.scene, this))
+        this.planets.push(new Planet(size, 0xff00ff, new THREE.Vector3(0, 0, 500), 100, new THREE.Vector3(-10, 0, 0), this.scene, this))
+        this.planets.push(new Planet(size, 0x00ffff, new THREE.Vector3(300, 0, 300), 100, new THREE.Vector3(-10, 0, 0), this.scene, this))
         this.updateFakePlanets()
     }
 
     update() {
-        if (this.paused) return
+        if (this.paused) {
+            return
+        }
 
         this.doStep(this.planets);
+    }
 
+    togglePause() {
+        this.paused = !this.paused;
+
+        this.setGridVisibility(this.paused);
+    }
+
+    setGridVisibility(vis: boolean) {
+        this.scene.children.forEach((x: any) => {
+            if (x instanceof THREE.GridHelper) {
+                x.visible = vis;
+            }
+        })
     }
 
     updateFakePlanets() {
@@ -94,7 +112,7 @@ export class Universe {
     }
 
     colDetec() {
-        return this.fakePlanets.filter(x => x.exploded).length > 0;
+        return this.fakePlanets.filter(x => x.exploded).length > 0 || this.planets.filter(x => x.exploded).length > 0;
     }
 
     checkForColInFuture() {

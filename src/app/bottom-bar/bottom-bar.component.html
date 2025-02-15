@@ -1,0 +1,17 @@
+<div id="bottom-bar">
+
+    <!-- Left -->
+    <div class="section">
+    </div>
+
+    <!-- Center -->
+    <div>
+        @if (!universe.colDetec()) {
+        <button (click)="universe.checkForColInFuture()">Check</button>
+        }
+    </div>
+
+    <!-- Right -->
+    <div>
+    </div>
+</div>

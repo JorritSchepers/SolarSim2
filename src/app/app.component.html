@@ -1,13 +1,22 @@
 <canvas id="bg"></canvas>
-<main>
-    <div *ngIf="universe.colDetec()" style="color: red; font-size: 100px;">Collision Detected</div>
-    <button *ngIf="!universe.colDetec()" (click)="universe.checkForColInFuture()">Check</button>
-    <div id="bottom-container">
-        <app-simulator style="opacity: 0;"></app-simulator>
-        <button id="start-button" (click)="universe.paused = !universe.paused">
-            <span *ngIf="universe.paused">Start</span>
-            <span *ngIf="!universe.paused">Pause</span>
-        </button>
-        <app-simulator></app-simulator>
-    </div>
-</main>
+
+<app-top-bar [universe]="universe"></app-top-bar>
+
+@if (universe.colDetec()) {
+<app-collision-warning></app-collision-warning>
+}
+
+<app-bottom-bar [universe]="universe"></app-bottom-bar>
+
+
+<!-- <div id="bottom-container">
+    <app-simulator style="opacity: 0;"></app-simulator>
+    <app-simulator></app-simulator>
+</div> -->
+
+
+<div id="action-panel">
+    <button onclick="toggleFlashlight()">Toggle Flashlight</button>
+    <button onclick="checkFutureCollisions()">Check Collisions</button>
+    <button onclick="calculateSomething()">Calculate</button>
+</div>
