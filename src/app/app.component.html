@@ -2,8 +2,8 @@
 
 <app-top-bar [universe]="universe"></app-top-bar>
 
-@if (universe.colDetec()) {
-<app-collision-warning></app-collision-warning>
+@if (universe.colDetec() > 0) {
+<app-collision-warning [count]="universe.colDetec()"></app-collision-warning>
 }
 
 <app-bottom-bar [universe]="universe"></app-bottom-bar>

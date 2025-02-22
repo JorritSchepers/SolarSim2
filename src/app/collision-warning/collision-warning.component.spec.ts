@@ -20,4 +20,6 @@ describe('CollisionWarningComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  
 });

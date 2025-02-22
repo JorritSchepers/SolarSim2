@@ -8,4 +8,5 @@ import { Component, Input } from '@angular/core';
     styleUrl: './collision-warning.component.sass'
 })
 export class CollisionWarningComponent {
+    @Input() count: number = 0;
 }

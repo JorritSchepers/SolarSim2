@@ -112,7 +112,7 @@ export class Universe {
     }
 
     colDetec() {
-        return this.fakePlanets.filter(x => x.exploded).length > 0 || this.planets.filter(x => x.exploded).length > 0;
+        return (this.fakePlanets.filter(x => x.exploded).length + this.planets.filter(x => x.exploded).length) / 2;
     }
 
     checkForColInFuture() {

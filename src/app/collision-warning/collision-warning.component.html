@@ -1,1 +1,6 @@
-<div id="collision-warning">Collision detected!</div>
+@if (count == 1) {
+    <div id="collision-warning">{{count}} Collision detected! </div>
+} @else {
+    <div id="collision-warning">{{count}} Collisions detected! </div>
+}
+
