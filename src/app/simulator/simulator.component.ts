@@ -17,7 +17,7 @@ export class SimulatorComponent {
 
     simulate(n: number) {
         for (let i = 0; i < n; i++) {
-            this.universe.doStep(this.universe.planets);
+            this.universe.doStep(this.universe.currentSystem!.planets);
         }
     }
 
@@ -27,7 +27,7 @@ export class SimulatorComponent {
     }
 
     updateXForFirstPlanet(x: number) {
-        const p = this.universe.planets[0];
+        const p = this.universe.currentSystem!.planets[0];
         p.updatePos(p.mesh.position.x + x, p.mesh.position.y, p.mesh.position.z);
         this.universe.updateFakePlanets();
     }

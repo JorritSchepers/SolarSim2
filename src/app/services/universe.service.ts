@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { Planet } from '../models/planet.model';
-import { Injectable } from '@angular/core';
+import { System } from '../models/system.model';
 
 export class Universe {
-    planets: Planet[] = [];
-    fakePlanets: Planet[] = [];
+    systems: System[] = [];
+    currentSystem: System | null = null;
 
     preSimSteps: number = 1000;
 
@@ -13,16 +13,31 @@ export class Universe {
     paused = true;
 
     constructor(private scene: any) {
+        this.initStartSystems();
         this.initStartPlanets();
     }
 
-    initStartPlanets() {
+    initStartSystems() {
         const size = 50;
-        this.planets.push(new Planet(size, 0x00ff00, new THREE.Vector3(-300, 0, 100), 100, new THREE.Vector3(0, 0, -5), this.scene, this))
-        this.planets.push(new Planet(size, 0xff0000, new THREE.Vector3(300, 0, 100), 100, new THREE.Vector3(-5, 0, 5), this.scene, this))
-        this.planets.push(new Planet(size, 0x0000ff, new THREE.Vector3(0, 0, -300), 100, new THREE.Vector3(5, 0, 0), this.scene, this))
-        this.planets.push(new Planet(size, 0xff00ff, new THREE.Vector3(0, 0, 500), 100, new THREE.Vector3(-10, 0, 0), this.scene, this))
-        this.planets.push(new Planet(size, 0x00ffff, new THREE.Vector3(300, 0, 300), 100, new THREE.Vector3(-10, 0, 0), this.scene, this))
+
+        // const rgbSystem = [
+        //     new Planet(size, 0x00ff00, new THREE.Vector3(-300, 0, 100), 100, new THREE.Vector3(0, 0, -5), this.scene, this),
+        //     new Planet(size, 0xff0000, new THREE.Vector3(300, 0, 100), 100, new THREE.Vector3(-5, 0, 5), this.scene, this),
+        //     new Planet(size, 0x0000ff, new THREE.Vector3(0, 0, -300), 100, new THREE.Vector3(5, 0, 0), this.scene, this),
+        // ]         
+        // this.systems.push(new System(rgbSystem));
+
+        const bigSol = [
+            new Planet(size, 0xffff00, new THREE.Vector3(0, 0, 0), 5000, new THREE.Vector3(0, 0, 0), this.scene, this),
+            new Planet(size, 0x00ffff, new THREE.Vector3(-500, 0, 0), 10, new THREE.Vector3(0, 0, 58), this.scene, this),
+            new Planet(size, 0x00ff00, new THREE.Vector3(1000, 0, 0), 10, new THREE.Vector3(0, 0, -57.9), this.scene, this),
+        ]         
+        this.systems.push(new System(bigSol));
+
+        this.currentSystem = this.systems[0];
+    }
+
+    initStartPlanets() {
         this.updateFakePlanets()
     }
 
@@ -31,7 +46,7 @@ export class Universe {
             return
         }
 
-        this.doStep(this.planets);
+        this.doStep(this.currentSystem!.planets);
     }
 
     togglePause() {
@@ -49,7 +64,7 @@ export class Universe {
     }
 
     updateFakePlanets() {
-        this.fakePlanets.forEach(x => {
+        this.currentSystem!.fakePlanets.forEach(x => {
             this.scene.remove(x.mesh);
             this.scene.remove(x.trail);
         })
@@ -58,14 +73,14 @@ export class Universe {
 
         // Simulate
         for (let i = 0; i < this.preSimSteps; i++) {
-            this.doStep(this.fakePlanets);
+            this.doStep(this.currentSystem!.fakePlanets);
         }
 
     }
 
     initFakePlanets() {
         // Copy
-        this.fakePlanets = this.planets.map(p => new Planet(
+        this.currentSystem!.fakePlanets = this.currentSystem!.planets.map(p => new Planet(
             p.size,
             p.color,
             p.mesh.position.clone(),
@@ -76,7 +91,7 @@ export class Universe {
         ));
 
         // Decrease brightness
-        this.fakePlanets.forEach(p => {
+        this.currentSystem!.fakePlanets.forEach(p => {
             p.material.color.multiplyScalar(0.05);
         });
     }
@@ -112,7 +127,7 @@ export class Universe {
     }
 
     colDetec() {
-        return (this.fakePlanets.filter(x => x.exploded).length + this.planets.filter(x => x.exploded).length) / 2;
+        return (this.currentSystem!.fakePlanets.filter(x => x.exploded).length + this.currentSystem!.planets.filter(x => x.exploded).length) / 2;
     }
 
     checkForColInFuture() {
@@ -120,7 +135,7 @@ export class Universe {
         while (!this.colDetec() && stepsDone < 10_000) {
             this.preSimSteps++;
             stepsDone++;
-            this.doStep(this.fakePlanets)
+            this.doStep(this.currentSystem!.fakePlanets)
         }
     }
 }

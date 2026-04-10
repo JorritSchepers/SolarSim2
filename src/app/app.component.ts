@@ -14,7 +14,7 @@ const FOV = 40;
 })
 export class AppComponent {
     // Start
-    cameraPos: number[] = [0, 1000, 0];
+    cameraPos: number[] = [0, 3000, 0];
 
     // Three 
     scene: any;
@@ -31,7 +31,7 @@ export class AppComponent {
 
         this.universe = new Universe(this.scene)
 
-        this.initDragControls(this.universe.planets.map(x => x.mesh));
+        this.initDragControls(this.universe.currentSystem!.planets.map(x => x.mesh));
     }
 
     private setup(): void {
@@ -109,7 +109,7 @@ export class AppComponent {
 
     async simulate(n: number) {
         for (let i = 0; i < n; i++) {
-            this.universe.doStep(this.universe.planets)
+            this.universe.doStep(this.universe.currentSystem!.planets)
         }
     }
 }
