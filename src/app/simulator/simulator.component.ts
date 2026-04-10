@@ -5,7 +5,8 @@ import { Universe } from '../services/universe.service';
 @Component({
     selector: 'app-simulator',
     templateUrl: './simulator.component.html',
-    styleUrls: ['./simulator.component.sass']
+    styleUrls: ['./simulator.component.sass'],
+    standalone: false
 })
 export class SimulatorComponent {
     universe: Universe;
