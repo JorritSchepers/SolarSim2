@@ -1,8 +1,8 @@
 import { Component, HostListener } from '@angular/core';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { DragControls } from 'three/addons/controls/DragControls.js';
 import { Universe } from './services/universe.service';
-import { DragControls } from 'three/examples/jsm/controls/DragControls';
 
 const FOV = 40;
 
@@ -22,7 +22,6 @@ export class AppComponent {
     renderer: any;
     controls: any;
     dragControls: any;
-
 
     // Sim
     universe: Universe;
