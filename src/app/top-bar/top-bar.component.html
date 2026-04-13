@@ -2,6 +2,11 @@
 
     <!-- Left -->
     <div class="section">
+        <div>
+            @for (system of universe.systems; track $index) {
+                <button (click)="universe.switchSystem(system)">{{system.name}}</button>
+            }
+        </div>
     </div>
 
     <!-- Center -->
