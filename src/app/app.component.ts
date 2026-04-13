@@ -35,15 +35,13 @@ export class AppComponent {
 
     this.universe = new Universe(this.scene);
 
-    this.initDragControls(
-      this.universe.currentSystem!.planets.map((x) => x.mesh),
-    );
+    this.initDragControls();
   }
 
   private setup(): void {
     this.initThree();
     this.nightSky.init();
-    this.nightSky.drawConstellations();
+    // this.nightSky.drawConstellations();
   }
 
   update() {}
@@ -98,19 +96,46 @@ export class AppComponent {
     animate();
   }
 
-  initDragControls(objects: any[]) {
+  initDragControls() {
+    var objects: any[] = [];
+
+    this.universe.systems.forEach((system) =>
+      system.planets.forEach((p) => {
+        objects.push(p.mesh);
+        objects.push(p.velocityCone);
+      }),
+    );
+
     this.dragControls = new DragControls(
       [...objects],
       this.camera,
       this.renderer.domElement,
     );
-    this.dragControls.addEventListener('drag', () => {
-      this.universe.updateFakePlanets();
+    this.dragControls.addEventListener('drag', function (event: any) {
+      switch (event.object.userData.type) {
+        case 'planet':
+          app.universe.updateFakePlanets();
+          app.universe.updateVelocityConePositions();
+          break;
+          case 'velocityCone':
+            app.universe.updateVelocityOfSelectedPlanet();
+            app.universe.updateFakePlanets();
+          break;
+      }
     });
 
     let app = this;
-    this.dragControls.addEventListener('dragstart', function () {
+    this.dragControls.addEventListener('dragstart', function (event: any) {
       app.controls.enabled = false;
+
+      const planet =
+        app.universe.systems
+          .flatMap((s) => s.planets)
+          .find((p) => p.mesh === event.object) ?? null;
+
+      if (planet) {
+        app.universe.selectPlanet(planet);
+      }
     });
     this.dragControls.addEventListener('dragend', function () {
       app.controls.enabled = true;

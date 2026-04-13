@@ -6,6 +6,8 @@ export class Universe {
   systems: System[] = [];
   currentSystem: System | null = null;
 
+  selectedPlanet: Planet | null = null;
+
   preSimSteps: number = 1000;
 
   time = 0;
@@ -29,6 +31,7 @@ export class Universe {
     const size = 50;
     const planets = [
       new Planet(
+        'Green planet',
         size,
         0x00ff00,
         new THREE.Vector3(-300, 0, 100),
@@ -37,6 +40,7 @@ export class Universe {
         this,
       ),
       new Planet(
+        'Red planet',
         size,
         0xff0000,
         new THREE.Vector3(300, 0, 100),
@@ -45,6 +49,7 @@ export class Universe {
         this,
       ),
       new Planet(
+        'Blue planet',
         size,
         0x0000ff,
         new THREE.Vector3(0, 0, -300),
@@ -53,7 +58,7 @@ export class Universe {
         this,
       ),
     ];
-    this.systems.push(new System(planets, this, "Three body system"));
+    this.systems.push(new System(planets, this, 'Three body system'));
   }
 
   initStarSystem() {
@@ -61,6 +66,7 @@ export class Universe {
 
     const planets = [
       new Planet(
+        'Yellow star',
         size * 2,
         0xffff00,
         new THREE.Vector3(0, 0, 0),
@@ -69,6 +75,7 @@ export class Universe {
         this,
       ),
       new Planet(
+        'Cyan planet',
         size,
         0x00ffff,
         new THREE.Vector3(-500, 0, 0),
@@ -77,6 +84,7 @@ export class Universe {
         this,
       ),
       new Planet(
+        'Green planet',
         size,
         0x00ff00,
         new THREE.Vector3(1000, 0, 0),
@@ -85,7 +93,7 @@ export class Universe {
         this,
       ),
     ];
-    this.systems.push(new System(planets, this, "Star system"));
+    this.systems.push(new System(planets, this, 'Star system'));
   }
 
   initStartPlanets() {
@@ -138,6 +146,9 @@ export class Universe {
       if (!planet.exploded) {
         planet.MovePlanet();
         planet.updateTrail();
+        planet.updateVelocityConePosition();
+        planet.updateVelocityConeRotation();
+
         this.calculateCollisions(planets);
       }
     });
@@ -152,8 +163,8 @@ export class Universe {
           p1.mesh.position.distanceTo(p2.mesh.position) <=
           Math.max(p1.size, p2.size)
         ) {
-          p1.exploded = true;
-          p2.exploded = true;
+          p1.explode(this.scene)
+          p2.explode(this.scene)
         }
       });
     });
@@ -181,5 +192,31 @@ export class Universe {
     this.currentSystem = newSystem;
     newSystem.addPlanetsToScene(this.scene);
     this.initStartPlanets();
+  }
+
+  selectPlanet(planet: Planet) {
+    if (this.selectedPlanet) {
+      this.selectedPlanet.hideVelocityCone(this.scene);
+    }
+    this.selectedPlanet = planet;
+    planet.showVelocityCone(this.scene);
+  }
+
+  updateVelocityConeRotations() {
+    if (this.selectedPlanet) {
+      this.selectedPlanet.updateVelocityConeRotation();
+    }
+  }
+
+  updateVelocityConePositions() {
+    if (this.selectedPlanet) {
+      this.selectedPlanet.updateVelocityConePosition();
+    }
+  }
+
+  updateVelocityOfSelectedPlanet() {
+    if (this.selectedPlanet) {
+      this.selectedPlanet.updateInitVelocity();
+    }
   }
 }

@@ -1,60 +1,65 @@
-import { Universe } from "../services/universe.service";
-import { Planet } from "./planet.model";
+import { Universe } from '../services/universe.service';
+import { Planet } from './planet.model';
 
 export class System {
-    static systemCounter = 1;
-    name: string;
+  static systemCounter = 1;
+  name: string;
 
-    planets: Planet[] = [];
-    fakePlanets: Planet[] = [];
+  planets: Planet[] = [];
+  fakePlanets: Planet[] = [];
 
-    universe: Universe;
+  universe: Universe;
 
-    constructor(planets: Planet[], universe: Universe, name?: string) {
-        if (name != null) {
-            this.name = name
-        } else {
-            this.name = "System " + System.systemCounter;
-        }
-
-        this.planets = planets; 
-        this.universe = universe;
-        this.initFakePlanets()
-        System.systemCounter++;
+  constructor(planets: Planet[], universe: Universe, name?: string) {
+    if (name != null) {
+      this.name = name;
+    } else {
+      this.name = 'System ' + System.systemCounter;
     }
 
-    addPlanetsToScene(scene: any) {
-        this.planets.forEach(p => p.addToScene(scene))
-        this.fakePlanets.forEach(p => p.addToScene(scene))
-    }
+    this.planets = planets;
+    this.universe = universe;
+    this.initFakePlanets();
+    System.systemCounter++;
+  }
 
-    initFakePlanets() {
-        // Copy
-        this.fakePlanets = this.planets.map(p => new Planet(
-            p.size,
-            p.color,
-            p.mesh.position.clone(),
-            p.mass,
-            p.velocity.clone(),
-            this.universe,
-        ));
+  addPlanetsToScene(scene: any) {
+    this.planets.forEach((p) => p.addToScene(scene));
+    this.fakePlanets.forEach((p) => p.addToScene(scene));
+  }
 
-        // Decrease brightness
-        this.fakePlanets.forEach(p => {
-            p.material.color.multiplyScalar(0.05);
-        });
-    }
+  initFakePlanets() {
+    // Copy
+    this.fakePlanets = this.planets.map(
+      (p) =>
+        new Planet(
+          'Fake planet of ' + p.name,
+          p.size,
+          p.color,
+          p.mesh.position.clone(),
+          p.mass,
+          p.velocity.clone(),
+          this.universe,
+          true,
+        ),
+    );
 
-    addFakePlanetsToScene(scene: any) {
-        this.fakePlanets.forEach(p => p.addToScene(scene));
-    }
+    // Decrease brightness
+    this.fakePlanets.forEach((p) => {
+      p.material.color.multiplyScalar(0.05);
+    });
+  }
 
-    removeFakePlanetsFromScene(scene: any) {
-        this.fakePlanets.forEach(p => p.removeFromScene(scene));
-    }
+  addFakePlanetsToScene(scene: any) {
+    this.fakePlanets.forEach((p) => p.addToScene(scene));
+  }
 
-    removeFromScene(scene: any) {
-        this.planets.forEach(p => p.removeFromScene(scene));
-        this.fakePlanets.forEach(p => p.removeFromScene(scene));
-    }
+  removeFakePlanetsFromScene(scene: any) {
+    this.fakePlanets.forEach((p) => p.removeFromScene(scene));
+  }
+
+  removeFromScene(scene: any) {
+    this.planets.forEach((p) => p.removeFromScene(scene));
+    this.fakePlanets.forEach((p) => p.removeFromScene(scene));
+  }
 }

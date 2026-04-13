@@ -8,3 +8,6 @@
 
 <app-bottom-bar [universe]="universe"></app-bottom-bar>
 
+@if (universe.selectedPlanet != null) {
+    <app-planet-panel [planet]="universe.selectedPlanet"/>
+}
