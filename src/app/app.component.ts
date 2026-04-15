@@ -52,7 +52,10 @@ export class AppComponent {
     this.initCamera();
     this.initRenderer();
     this.initGrid();
-    this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.orbitControls = new OrbitControls(
+      this.camera,
+      this.renderer.domElement,
+    );
 
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     let app = this;
@@ -99,6 +102,11 @@ export class AppComponent {
       this.cameraPos[2],
     );
     this.camera.lookAt(0, 0, 0);
+
+    const cameraLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    this.camera.add(cameraLight); // 👈 attach to camera, not scene
+
+    this.scene.add(this.camera); // 👈 camera must be in the scene for its children to render
   }
 
   initDragControls() {

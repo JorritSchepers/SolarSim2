@@ -5,7 +5,7 @@ import { MeshType } from './meshType.model';
 const DETAIL = 32;
 
 export class Planet {
-  material: THREE.MeshBasicMaterial;
+  material: THREE.MeshStandardMaterial;
   mesh: THREE.Mesh;
   velocity: THREE.Vector3;
   trail!: THREE.Line;
@@ -32,7 +32,7 @@ export class Planet {
     this.velocity = initVelocity;
 
     const geometry = new THREE.SphereGeometry(this.size, DETAIL, DETAIL);
-    this.material = new THREE.MeshBasicMaterial({ color: this.color });
+    this.material = new THREE.MeshStandardMaterial({ color: this.color});
     this.mesh = new THREE.Mesh(geometry, this.material);
     this.mesh.userData['type'] = MeshType.Planet;
     this.mesh.position.set(pos.x, pos.y, pos.z);

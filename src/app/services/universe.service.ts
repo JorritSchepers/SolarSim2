@@ -6,6 +6,7 @@ export class Universe {
   systems: System[] = [];
   currentSystem: System | null = null;
   selectedPlanet: Planet | null = null;
+  lastSelectedPlanet: Planet | null = null;
 
   preSimSteps: number = 1000;
 
@@ -104,6 +105,12 @@ export class Universe {
   togglePause() {
     this.paused = !this.paused;
 
+    if (this.paused == false) {
+      this.selectPlanet(null);
+    } else {
+      this.selectPlanet(this.lastSelectedPlanet);
+    }
+
     this.setGridVisibility(this.paused);
   }
 
@@ -156,8 +163,8 @@ export class Universe {
           p1.mesh.position.distanceTo(p2.mesh.position) <=
           Math.max(p1.size, p2.size)
         ) {
-          p1.explode(this.scene)
-          p2.explode(this.scene)
+          p1.explode(this.scene);
+          p2.explode(this.scene);
         }
       });
     });
@@ -188,12 +195,19 @@ export class Universe {
     this.updateFakePlanets();
   }
 
-  selectPlanet(planet: Planet) {
-    if (this.selectedPlanet) {
-      this.selectedPlanet.hideVelocityCone(this.scene);
+  selectPlanet(planet: Planet | null) {
+    this.lastSelectedPlanet = this.selectedPlanet
+
+    if (this.lastSelectedPlanet) {
+      this.lastSelectedPlanet.hideVelocityCone(this.scene);
     }
+
+    this.lastSelectedPlanet = this.selectedPlanet;
     this.selectedPlanet = planet;
-    planet.showVelocityCone(this.scene);
+
+    if (planet) {
+      planet.showVelocityCone(this.scene);
+    }
   }
 
   updateVelocityConeRotations() {
