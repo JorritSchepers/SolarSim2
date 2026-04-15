@@ -5,14 +5,13 @@ import { System } from '../models/system.model';
 export class Universe {
   systems: System[] = [];
   currentSystem: System | null = null;
-
   selectedPlanet: Planet | null = null;
 
   preSimSteps: number = 1000;
 
-  time = 0;
-  timeStep = 0.5;
-  paused = true;
+  time: number = 0;
+  timeStep: number = 0.5;
+  paused: boolean = true;
 
   constructor(private scene: any) {
     this.initStartSystems();
@@ -20,8 +19,6 @@ export class Universe {
   }
 
   initStartSystems() {
-    const size = 50;
-
     this.initThreeBodySystem();
 
     this.initStarSystem();
@@ -96,10 +93,6 @@ export class Universe {
     this.systems.push(new System(planets, this, 'Star system'));
   }
 
-  initStartPlanets() {
-    this.updateFakePlanets();
-  }
-
   update() {
     if (this.paused) {
       return;
@@ -144,7 +137,7 @@ export class Universe {
 
     planets.forEach((planet) => {
       if (!planet.exploded) {
-        planet.MovePlanet();
+        planet.movePlanet();
         planet.updateTrail();
         planet.updateVelocityConePosition();
         planet.updateVelocityConeRotation();
@@ -192,7 +185,7 @@ export class Universe {
     this.currentSystem = newSystem;
     this.selectedPlanet = null;
     newSystem.addPlanetsToScene(this.scene);
-    this.initStartPlanets();
+    this.updateFakePlanets();
   }
 
   selectPlanet(planet: Planet) {

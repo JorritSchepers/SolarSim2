@@ -1,20 +1,20 @@
 import * as THREE from 'three';
 import { Universe } from '../services/universe.service';
+import { MeshType } from './meshType.model';
 
 const DETAIL = 32;
 
 export class Planet {
-  geometry: any;
-  material: any;
-  mesh: any;
+  material: THREE.MeshBasicMaterial;
+  mesh: THREE.Mesh;
   velocity: THREE.Vector3;
-  trail: any;
+  trail!: THREE.Line;
   exploded: boolean = false;
   isFake: boolean = false;
 
   n: number = 0;
 
-  velocityCone: any;
+  velocityCone!: THREE.Mesh;
 
   list: THREE.Vector3[] = [];
 
@@ -22,7 +22,7 @@ export class Planet {
     public name: string,
     public size: number,
     public color: number,
-    public pos: THREE.Vector3,
+    pos: THREE.Vector3,
     public mass: number,
     private initVelocity: THREE.Vector3,
     private universe: Universe,
@@ -31,10 +31,10 @@ export class Planet {
     if (fake) this.isFake = fake;
     this.velocity = initVelocity;
 
-    this.geometry = new THREE.SphereGeometry(this.size, DETAIL, DETAIL);
+    const geometry = new THREE.SphereGeometry(this.size, DETAIL, DETAIL);
     this.material = new THREE.MeshBasicMaterial({ color: this.color });
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.mesh.userData.type = 'planet';
+    this.mesh = new THREE.Mesh(geometry, this.material);
+    this.mesh.userData['type'] = MeshType.Planet;
     this.mesh.position.set(pos.x, pos.y, pos.z);
 
     this.initVelocityCone();
@@ -56,7 +56,7 @@ export class Planet {
     const g = new THREE.ConeGeometry(this.size / 2, this.size, DETAIL);
     const m = new THREE.MeshBasicMaterial({ color: this.color });
     this.velocityCone = new THREE.Mesh(g, m);
-    this.velocityCone.userData.type = 'velocityCone';
+    this.velocityCone.userData['type'] = MeshType.VelocityCone;
     this.updateVelocityConePosition();
     this.updateVelocityConeRotation();
   }
@@ -79,7 +79,7 @@ export class Planet {
     this.mesh.position.set(x, y, z);
   }
 
-  MovePlanet() {
+  movePlanet() {
     this.mesh.position.addScaledVector(this.velocity, this.universe.timeStep);
   }
 
