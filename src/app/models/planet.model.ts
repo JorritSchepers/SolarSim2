@@ -126,7 +126,6 @@ export class Planet {
   updateVelocityConeRotation() {
     const dir = this.initVelocity.clone().normalize();
 
-    // Align the cone's Y axis (default up) with the velocity direction
     this.velocityCone.quaternion.setFromUnitVectors(
       new THREE.Vector3(0, 1, 0),
       dir,

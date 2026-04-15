@@ -190,6 +190,7 @@ export class Universe {
   switchSystem(newSystem: System) {
     this.currentSystem?.removeFromScene(this.scene);
     this.currentSystem = newSystem;
+    this.selectedPlanet = null;
     newSystem.addPlanetsToScene(this.scene);
     this.initStartPlanets();
   }

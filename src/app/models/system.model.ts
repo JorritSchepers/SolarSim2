@@ -59,7 +59,10 @@ export class System {
   }
 
   removeFromScene(scene: any) {
-    this.planets.forEach((p) => p.removeFromScene(scene));
+    this.planets.forEach((p: Planet) => {
+        p.removeFromScene(scene);
+        p.hideVelocityCone(scene);
+    });
     this.fakePlanets.forEach((p) => p.removeFromScene(scene));
   }
 }
