@@ -14,15 +14,19 @@ export class Universe {
   timeStep: number = 0.5;
   paused: boolean = true;
 
+  showingTrails: boolean = true;
+  showingFakeTrails: boolean = true;
+
   constructor(private scene: any) {
     this.initStartSystems();
-    this.switchSystem(this.systems[0]);
   }
 
   initStartSystems() {
     this.initThreeBodySystem();
-
     this.initStarSystem();
+    this.initSolarSystem();
+    this.initFigureEight();
+    this.switchSystem(this.systems[0]);
   }
 
   initThreeBodySystem() {
@@ -43,7 +47,7 @@ export class Universe {
         0xff0000,
         new THREE.Vector3(300, 0, 100),
         100,
-        new THREE.Vector3(-5, 0, 5),
+        new THREE.Vector3(-9, 0, 9),
         this,
       ),
       new Planet(
@@ -92,6 +96,134 @@ export class Universe {
       ),
     ];
     this.systems.push(new System(planets, this, 'Star system'));
+  }
+
+  initSolarSystem() {
+    const size = 20;
+
+    const planets = [
+      new Planet(
+        'Sol',
+        size * 2,
+        0xffff00,
+        new THREE.Vector3(0, 0, 0),
+        5000,
+        new THREE.Vector3(0, 0, 0),
+        this,
+      ),
+      new Planet(
+        'Mercury',
+        size,
+        0x777777,
+        new THREE.Vector3(-100, 0, 0),
+        10,
+        new THREE.Vector3(0, 0, -58),
+        this,
+      ),
+      new Planet(
+        'Venus',
+        size,
+        0x7a381c,
+        new THREE.Vector3(-200, 0, 0),
+        10,
+        new THREE.Vector3(0, 0, 58),
+        this,
+      ),
+      new Planet(
+        'Earth',
+        size,
+        0x243e49,
+        new THREE.Vector3(300, 0, 0),
+        10,
+        new THREE.Vector3(0, 0, 58),
+        this,
+      ),
+      new Planet(
+        'Mars',
+        size,
+        0xac6349,
+        new THREE.Vector3(-400, 0, 0),
+        10,
+        new THREE.Vector3(0, 0, -58),
+        this,
+      ),
+      new Planet(
+        'Jupiter',
+        size * 2,
+        0x9f8e7a,
+        new THREE.Vector3(700, 0, 0),
+        10,
+        new THREE.Vector3(0, 0, 58),
+        this,
+      ),
+      new Planet(
+        'Saturn',
+        size * 2,
+        0xb2915f,
+        new THREE.Vector3(-800, 0, 0),
+        10,
+        new THREE.Vector3(0, 0, -58),
+        this,
+      ),
+      new Planet(
+        'Uranus',
+        size * 2,
+        0x8eb2c4,
+        new THREE.Vector3(900, 0, 0),
+        10,
+        new THREE.Vector3(0, 0, 58),
+        this,
+      ),
+      new Planet(
+        'Neptune',
+        size * 2,
+        0x4662f6,
+        new THREE.Vector3(-1000, 0, 0),
+        10,
+        new THREE.Vector3(0, 0, -58),
+        this,
+      ),
+    ];
+    this.systems.push(new System(planets, this, 'Solar system'));
+  }
+
+  initFigureEight() {
+    const scale = 309; // position scale factor
+    const vScale = 12; // tune this to match your simulation's time step / G constant
+
+    const v3x = -0.93240737 * vScale;
+    const v3y = -0.86473146 * vScale;
+
+    const planets = [
+      new Planet(
+        'Green planet',
+        5,
+        0x00ff00,
+        new THREE.Vector3(-0.97000436 * scale, 0.24308753 * scale, 0),
+        100,
+        new THREE.Vector3(-v3x / 2, -v3y / 2, 0), // v1 = -v3/2
+        this,
+      ),
+      new Planet(
+        'Red planet',
+        5,
+        0xff0000,
+        new THREE.Vector3(0.97000436 * scale, -0.24308753 * scale, 0),
+        100,
+        new THREE.Vector3(-v3x / 2, -v3y / 2, 0), // v2 = -v3/2 (same as v1)
+        this,
+      ),
+      new Planet(
+        'Blue planet',
+        5,
+        0x0000ff,
+        new THREE.Vector3(0, 0, 0),
+        100,
+        new THREE.Vector3(v3x, v3y, 0), // v3
+        this,
+      ),
+    ];
+    this.systems.push(new System(planets, this, 'Figure eight'));
   }
 
   update() {
@@ -145,7 +277,11 @@ export class Universe {
     planets.forEach((planet) => {
       if (!planet.exploded) {
         planet.movePlanet();
+
         planet.updateTrail();
+
+        this.showingFakeTrails = true;
+
         planet.updateVelocityConePosition();
         planet.updateVelocityConeRotation();
 
@@ -196,7 +332,7 @@ export class Universe {
   }
 
   selectPlanet(planet: Planet | null) {
-    this.lastSelectedPlanet = this.selectedPlanet
+    this.lastSelectedPlanet = this.selectedPlanet;
 
     if (this.lastSelectedPlanet) {
       this.lastSelectedPlanet.hideVelocityCone(this.scene);
@@ -225,6 +361,42 @@ export class Universe {
   updateVelocityOfSelectedPlanet() {
     if (this.selectedPlanet) {
       this.selectedPlanet.updateInitVelocity();
+    }
+  }
+
+  showTrail() {
+    this.currentSystem?.planets.forEach((p) => p.showTrail(this.scene));
+  }
+
+  hideTrail() {
+    this.currentSystem?.planets.forEach((p) => p.hideTrail(this.scene));
+  }
+
+  toggleTrail() {
+    this.showingTrails = !this.showingTrails;
+
+    if (this.showingTrails) {
+      this.showTrail();
+    } else {
+      this.hideTrail();
+    }
+  }
+
+  showFakeTrail() {
+    this.currentSystem?.fakePlanets.forEach((p) => p.showTrail(this.scene));
+  }
+
+  hideFakeTrail() {
+    this.currentSystem?.fakePlanets.forEach((p) => p.hideTrail(this.scene));
+  }
+
+  toggleFakeTrail() {
+    this.showingFakeTrails = !this.showingFakeTrails;
+
+    if (this.showingFakeTrails) {
+      this.showFakeTrail();
+    } else {
+      this.hideFakeTrail();
     }
   }
 }

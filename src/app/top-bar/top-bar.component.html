@@ -1,6 +1,7 @@
 <div id="top-bar">
   <!-- Left -->
   <div>
+    <app-time-panel [universe]="universe" style="height: 100%" />
     <select
       class="system-select"
       (change)="
@@ -16,13 +17,8 @@
   </div>
 
   <!-- Center -->
-  <div>
-    <button id="start-button" (click)="universe.togglePause()">
-      {{ universe.paused ? "&#x23f5;" : "&#x23f8;" }}
-    </button>
-  </div>
-
+  <div></div>
+  
   <!-- Right -->
-  <div>
-  </div>
+  <div></div>
 </div>

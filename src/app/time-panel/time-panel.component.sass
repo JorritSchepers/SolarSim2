@@ -1,0 +1,23 @@
+#container
+    display: flex
+    height: 100%
+    align-items: center
+
+    div 
+        $size: 50px
+        width: $size/3*2
+        height: $size
+        display: flex
+        align-items: center
+        justify-content: center 
+        cursor: pointer
+        opacity: .5
+
+        &:first-child
+            opacity: 1
+
+        &:hover
+            background-color: rgba(255, 255, 255, .1)
+
+.active
+    opacity: 1 !important

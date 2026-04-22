@@ -13,5 +13,9 @@
 
     <!-- Right -->
     <div>
+        <div id="button-container">
+            <button (click)="toggleLines()" [class.off]="!universe.showingTrails">Lines</button>
+            <button (click)="toggleFakeLines()" [class.off]="!universe.showingFakeTrails">Predicted Lines</button>
+        </div>
     </div>
 </div>

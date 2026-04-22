@@ -23,7 +23,6 @@ export class AppComponent {
   camera!: THREE.PerspectiveCamera;
   renderer!: THREE.WebGLRenderer;
   orbitControls!: OrbitControls;
-  dragControls!: DragControls;
 
   // Sim
   universe: Universe;
@@ -42,7 +41,7 @@ export class AppComponent {
   private setup(): void {
     this.initThree();
     this.nightSky.init();
-    // this.nightSky.drawConstellations();
+    this.nightSky.drawConstellations();
   }
 
   update() {}
@@ -64,9 +63,15 @@ export class AppComponent {
       app.onWindowResize();
       app.update();
       app.renderer.render(app.scene, app.camera);
-      app.orbitControls.update();
       if (app.universe) {
         app.universe.update();
+        // if (!app.universe.paused) {
+        //   if (app.universe.currentSystem?.planets[3].velocity) {
+        //     app.camera.position.x = app.universe.currentSystem?.planets[3].mesh.position.x
+        //     app.camera.position.z = app.universe.currentSystem?.planets[3].mesh.position.z
+        //     app.camera.lookAt(app.universe.currentSystem?.planets[3].mesh.position)
+        //   }
+        // }
       }
     };
 
@@ -104,9 +109,8 @@ export class AppComponent {
     this.camera.lookAt(0, 0, 0);
 
     const cameraLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    this.camera.add(cameraLight); // 👈 attach to camera, not scene
-
-    this.scene.add(this.camera); // 👈 camera must be in the scene for its children to render
+    this.camera.add(cameraLight);
+    this.scene.add(this.camera);
   }
 
   initDragControls() {
@@ -119,38 +123,63 @@ export class AppComponent {
       }),
     );
 
-    this.dragControls = new DragControls(
+    const dragControls = new DragControls(
       [...objects],
       this.camera,
       this.renderer.domElement,
     );
-    this.dragControls.addEventListener('drag', function (event: any) {
-      switch (event.object.userData.type) {
-        case MeshType.Planet:
-          app.universe.updateFakePlanets();
-          app.universe.updateVelocityConePositions();
-          break;
-        case MeshType.VelocityCone:
-          app.universe.updateVelocityOfSelectedPlanet();
-          app.universe.updateFakePlanets();
-          break;
+
+    this.initDragEventListeners(dragControls);
+    this.initDragStartEventListener(dragControls);
+    this.initDragEndEventListener(dragControls);
+  }
+  
+  initDragEventListeners(dragControls: DragControls) {
+    this.initDragPlanetEventListener(dragControls);
+    this.initDragVelocityConePlanetEventListener(dragControls);
+  }
+
+  initDragPlanetEventListener(dragControls: DragControls) {
+    const app = this;
+    dragControls.addEventListener('drag', function (event: any) {
+      if (event.object.userData.type != MeshType.Planet) {
+        return;
       }
+      app.universe.updateFakePlanets();
+      app.universe.updateVelocityConePositions();
     });
+  }
 
-    let app = this;
-    this.dragControls.addEventListener('dragstart', function (event: any) {
+  initDragVelocityConePlanetEventListener(dragControls: DragControls) {
+    const app = this;
+    dragControls.addEventListener('drag', function (event: any) {
+      if (event.object.userData.type != MeshType.VelocityCone) {
+        return;
+      }
+      app.universe.updateVelocityOfSelectedPlanet();
+      app.universe.updateFakePlanets();
+    });
+  }
+
+  initDragStartEventListener(dragControls: DragControls) {
+    const app = this;
+    dragControls.addEventListener('dragstart', function (event: any) {
       app.orbitControls.enabled = false;
-
+      
       const planet =
-        app.universe.systems
-          .flatMap((s) => s.planets)
-          .find((p) => p.mesh === event.object) ?? null;
-
+      app.universe.systems
+      .flatMap((s) => s.planets)
+      .find((p) => p.mesh === event.object) ?? null;
+      
       if (planet) {
         app.universe.selectPlanet(planet);
       }
     });
-    this.dragControls.addEventListener('dragend', function () {
+  }
+
+  initDragEndEventListener(dragControls: DragControls) {
+    const app = this;
+    dragControls.addEventListener('dragend', function () {
       app.orbitControls.enabled = true;
     });
   }

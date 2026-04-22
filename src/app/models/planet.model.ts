@@ -25,7 +25,7 @@ export class Planet {
     pos: THREE.Vector3,
     public mass: number,
     private initVelocity: THREE.Vector3,
-    private universe: Universe,
+    public universe: Universe,
     fake?: boolean,
   ) {
     if (fake) this.isFake = fake;
@@ -38,6 +38,7 @@ export class Planet {
     this.mesh.position.set(pos.x, pos.y, pos.z);
 
     this.initVelocityCone();
+    this.initTrail()
   }
 
   updateInitVelocity() {
@@ -121,6 +122,14 @@ export class Planet {
 
   hideVelocityCone(scene: any) {
     scene.remove(this.velocityCone);
+  }
+
+  showTrail(scene: any) {
+    scene.add(this.trail);
+  }
+
+  hideTrail(scene: any) {
+    scene.remove(this.trail);
   }
 
   updateVelocityConeRotation() {
