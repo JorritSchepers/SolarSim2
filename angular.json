@@ -38,7 +38,7 @@
           },
           "configurations": {
             "production": {
-              "baseHref": "/solarsim2/",
+              "baseHref": "/SolarSim2/",
               "budgets": [
                 {
                   "type": "initial",
