@@ -36,6 +36,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/solarsim2/",
               "budgets": [
                 {
                   "type": "initial",
