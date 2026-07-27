@@ -28,13 +28,13 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run build -- --configuration production --base-href /SolarSim2/
+      - run: npm run build --base-href=/SolarSim2/
 
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/solar-sim2
+          path: dist/solar-sim2/browser
 
   deploy:
     environment:
