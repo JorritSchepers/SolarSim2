@@ -104,11 +104,16 @@ export class Planet {
     this.trail.geometry = trailGeometry;
   }
 
-  addToScene(scene: any) {
-    if (this.exploded || !this.isFake) {
-      scene.add(this.mesh);
+  addToScene(scene: any, trail: boolean) {
+    if (trail) {
+      scene.add(this.trail);
     }
-    scene.add(this.trail);
+
+    if (!this.exploded && this.isFake) {
+     return 
+    }
+    
+    scene.add(this.mesh);
   }
 
   removeFromScene(scene: any) {

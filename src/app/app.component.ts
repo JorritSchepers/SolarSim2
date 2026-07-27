@@ -133,7 +133,7 @@ export class AppComponent {
     this.initDragStartEventListener(dragControls);
     this.initDragEndEventListener(dragControls);
   }
-  
+
   initDragEventListeners(dragControls: DragControls) {
     this.initDragPlanetEventListener(dragControls);
     this.initDragVelocityConePlanetEventListener(dragControls);
@@ -165,12 +165,12 @@ export class AppComponent {
     const app = this;
     dragControls.addEventListener('dragstart', function (event: any) {
       app.orbitControls.enabled = false;
-      
+
       const planet =
-      app.universe.systems
-      .flatMap((s) => s.planets)
-      .find((p) => p.mesh === event.object) ?? null;
-      
+        app.universe.systems
+          .flatMap((s) => s.planets)
+          .find((p) => p.mesh === event.object) ?? null;
+
       if (planet) {
         app.universe.selectPlanet(planet);
       }
@@ -199,8 +199,10 @@ export class AppComponent {
   }
 
   async simulate(n: number) {
-    for (let i = 0; i < n; i++) {
-      this.universe.doStep(this.universe.currentSystem!.planets);
+    if (this.universe.currentSystem()) {
+      for (let i = 0; i < n; i++) {
+        this.universe.doStep(this.universe.currentSystem()!.planets);
+      }
     }
   }
 }

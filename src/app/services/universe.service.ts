@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 import { Planet } from '../models/planet.model';
 import { System } from '../models/system.model';
+import { effect, signal } from '@angular/core';
 
 export class Universe {
   systems: System[] = [];
-  currentSystem: System | null = null;
+  currentSystem = signal<System | null>(null);
   selectedPlanet: Planet | null = null;
   lastSelectedPlanet: Planet | null = null;
 
@@ -14,11 +15,17 @@ export class Universe {
   timeStep: number = 0.5;
   paused: boolean = true;
 
-  showingTrails: boolean = true;
-  showingFakeTrails: boolean = true;
+  showingTrails = signal(true);
+  showingFakeTrails = signal(true);
 
-  constructor(private scene: any) {
+  constructor(public scene: any) {
     this.initStartSystems();
+
+    effect(() => {
+      this.selectedPlanet = null;
+      this.currentSystem()?.addPlanetsToScene(this.scene);
+      this.updateFakePlanets();
+    });
   }
 
   initStartSystems() {
@@ -231,7 +238,7 @@ export class Universe {
       return;
     }
 
-    this.doStep(this.currentSystem!.planets);
+    this.doStep(this.currentSystem()!.planets);
   }
 
   togglePause() {
@@ -255,16 +262,16 @@ export class Universe {
   }
 
   updateFakePlanets() {
-    this.currentSystem?.removeFakePlanetsFromScene(this.scene);
+    this.currentSystem()?.removeFakePlanetsFromScene(this.scene);
 
-    this.currentSystem?.initFakePlanets();
+    this.currentSystem()?.initFakePlanets();
 
     // Simulate
     for (let i = 0; i < this.preSimSteps; i++) {
-      this.doStep(this.currentSystem!.fakePlanets);
+      this.doStep(this.currentSystem()!.fakePlanets);
     }
 
-    this.currentSystem?.addFakePlanetsToScene(this.scene);
+    this.currentSystem()?.addFakePlanetsToScene(this.scene);
   }
 
   doStep(planets: Planet[]) {
@@ -279,8 +286,6 @@ export class Universe {
         planet.movePlanet();
 
         planet.updateTrail();
-
-        this.showingFakeTrails = true;
 
         planet.updateVelocityConePosition();
         planet.updateVelocityConeRotation();
@@ -308,8 +313,8 @@ export class Universe {
 
   colDetec() {
     return (
-      (this.currentSystem!.fakePlanets.filter((x) => x.exploded).length +
-        this.currentSystem!.planets.filter((x) => x.exploded).length) /
+      (this.currentSystem()!.fakePlanets.filter((x) => x.exploded).length +
+        this.currentSystem()!.planets.filter((x) => x.exploded).length) /
       2
     );
   }
@@ -319,16 +324,13 @@ export class Universe {
     while (!this.colDetec() && stepsDone < 10_000) {
       this.preSimSteps++;
       stepsDone++;
-      this.doStep(this.currentSystem!.fakePlanets);
+      this.doStep(this.currentSystem()!.fakePlanets);
     }
   }
 
   switchSystem(newSystem: System) {
-    this.currentSystem?.removeFromScene(this.scene);
-    this.currentSystem = newSystem;
-    this.selectedPlanet = null;
-    newSystem.addPlanetsToScene(this.scene);
-    this.updateFakePlanets();
+    this.currentSystem()?.removeFromScene(this.scene);
+    this.currentSystem.set(newSystem);
   }
 
   selectPlanet(planet: Planet | null) {
@@ -361,42 +363,6 @@ export class Universe {
   updateVelocityOfSelectedPlanet() {
     if (this.selectedPlanet) {
       this.selectedPlanet.updateInitVelocity();
-    }
-  }
-
-  showTrail() {
-    this.currentSystem?.planets.forEach((p) => p.showTrail(this.scene));
-  }
-
-  hideTrail() {
-    this.currentSystem?.planets.forEach((p) => p.hideTrail(this.scene));
-  }
-
-  toggleTrail() {
-    this.showingTrails = !this.showingTrails;
-
-    if (this.showingTrails) {
-      this.showTrail();
-    } else {
-      this.hideTrail();
-    }
-  }
-
-  showFakeTrail() {
-    this.currentSystem?.fakePlanets.forEach((p) => p.showTrail(this.scene));
-  }
-
-  hideFakeTrail() {
-    this.currentSystem?.fakePlanets.forEach((p) => p.hideTrail(this.scene));
-  }
-
-  toggleFakeTrail() {
-    this.showingFakeTrails = !this.showingFakeTrails;
-
-    if (this.showingFakeTrails) {
-      this.showFakeTrail();
-    } else {
-      this.hideFakeTrail();
     }
   }
 }

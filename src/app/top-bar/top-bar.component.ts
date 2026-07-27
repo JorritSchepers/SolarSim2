@@ -9,9 +9,4 @@ import { TimePanelComponent } from "../time-panel/time-panel.component";
 })
 export class TopBarComponent {
   @Input() universe: any;
-
-  getSystemByName(event: Event) {
-    const name = (event.target as HTMLSelectElement).value;
-    return this.universe.systems.find((s:any) => s.name === name);
-  }
 }
