@@ -1,12 +1,20 @@
 import { Component, Input } from '@angular/core';
+import { Universe } from '../services/universe.service';
 
 @Component({
     selector: 'app-bottom-bar',
-    standalone: true,
     imports: [],
     templateUrl: './bottom-bar.component.html',
     styleUrl: './bottom-bar.component.sass'
 })
 export class BottomBarComponent {
-    @Input() universe: any;
+    @Input() universe!: Universe;
+
+    toggleLines() {
+        this.universe.toggleTrail();
+    }
+
+    toggleFakeLines() {
+        this.universe.toggleFakeTrail();
+    }
 }

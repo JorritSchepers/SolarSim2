@@ -1,18 +1,24 @@
 <div id="top-bar">
+  <!-- Left -->
+  <div>
+    <app-time-panel [universe]="universe" style="height: 100%" />
+    <select
+      class="system-select"
+      (change)="
+        universe.switchSystem(
+          universe.systems[$any($event.target).selectedIndex]
+        )
+      "
+    >
+      @for (system of universe.systems; track $index) {
+        <option>{{ system.name }}</option>
+      }
+    </select>
+  </div>
 
-    <!-- Left -->
-    <div class="section">
-    </div>
-
-    <!-- Center -->
-    <div>
-        <button id="start-button" (click)="universe.togglePause()">
-            {{universe.paused ? "&#x23f5;" : "&#x23f8;"}}
-        </button>
-    </div>
-
-    <!-- Righg -->
-    <div>
-
-    </div>
+  <!-- Center -->
+  <div></div>
+  
+  <!-- Right -->
+  <div></div>
 </div>

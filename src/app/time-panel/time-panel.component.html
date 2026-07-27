@@ -1,0 +1,8 @@
+<div id="container">
+  <div (click)="pause()">
+    {{ universe.paused ? "&#x23f5;" : "&#x23f8;" }}
+  </div>
+  <div (click)="changeSpeed(1)" [class.active]="universe.timeStep == speeds[0]">></div>
+  <div (click)="changeSpeed(2)" [class.active]="universe.timeStep == speeds[1]">>></div>
+  <div (click)="changeSpeed(3)" [class.active]="universe.timeStep == speeds[2]">>>></div>
+</div>

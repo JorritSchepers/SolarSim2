@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap')
+
 #top-bar
     position: absolute
     top: 0
@@ -18,7 +20,13 @@
         width: 33%
         display: flex
         align-items: center
-        justify-content: center
+        height: 100%
+
+        &:nth-child(2)
+            justify-content: center
+
+        &:last-child
+            justify-content: flex-end
 
 #start-button
     height: 100%
@@ -31,3 +39,18 @@
     &:hover
         cursor: pointer
         background: #333
+
+.system-select
+    background: transparent
+    border: none
+    outline: none
+    color: snow
+    font-family: 'Share Tech Mono', monospace
+    font-size: 16px
+    letter-spacing: 0.05em
+    cursor: pointer
+    padding-left: 20px
+
+    & option
+        background: #333
+        color: snow
