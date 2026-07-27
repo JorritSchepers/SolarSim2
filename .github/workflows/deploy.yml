@@ -34,7 +34,7 @@ jobs:
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/my-angular-app
+          path: dist/solar-sim2
 
   deploy:
     environment:
