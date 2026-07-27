@@ -28,7 +28,7 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run build -- --configuration production --base-href /my-angular-app/
+      - run: npm run build -- --configuration production --base-href /SolarSim2/
 
       - uses: actions/configure-pages@v5
 
