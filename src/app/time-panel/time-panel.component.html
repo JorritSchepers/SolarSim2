@@ -1,8 +1,23 @@
 <div id="container">
   <div (click)="pause()">
-    {{ universe.paused ? "&#x23f5;" : "&#x23f8;" }}
+    @if (universe.paused) {
+      <svg viewBox="0 0 24 24" width="20" height="20">
+        <polygon points="8,5 19,12 8,19" fill="currentColor" />
+      </svg>
+    } @else {
+      <svg viewBox="0 0 24 24" width="20" height="20">
+        <rect x="6" y="5" width="4" height="14" fill="currentColor" />
+        <rect x="14" y="5" width="4" height="14" fill="currentColor" />
+      </svg>
+    }
   </div>
-  <div (click)="changeSpeed(1)" [class.active]="universe.timeStep == speeds[0]">></div>
-  <div (click)="changeSpeed(2)" [class.active]="universe.timeStep == speeds[1]">>></div>
-  <div (click)="changeSpeed(3)" [class.active]="universe.timeStep == speeds[2]">>>></div>
+  <div (click)="changeSpeed(1)" [class.active]="universe.timeStep == speeds[0]">
+    1x
+  </div>
+  <div (click)="changeSpeed(2)" [class.active]="universe.timeStep == speeds[1]">
+    5x
+  </div>
+  <div (click)="changeSpeed(3)" [class.active]="universe.timeStep == speeds[2]">
+    10x
+  </div>
 </div>

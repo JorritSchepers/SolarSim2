@@ -20,7 +20,7 @@ export class TimePanelComponent {
   pause() {
     this.universe.togglePause();
   }
-
+  
   changeSpeed(speed: number) {
     this.universe.timeStep = this.speeds[speed - 1];
   }
